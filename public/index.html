@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FaceApp - Attendance</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    #timerDisplay {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+
+    #authContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #authBox {
+      background: #ffffff;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #authBox h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    #authBox input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    #authBox button {
+      padding: 10px 16px;
+      font-size: 16px;
+      background: #1e88e5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    #authBox button:hover {
+      background: #1565c0;
+    }
+
+    #mainApp {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Password Gate -->
+  <div id="authContainer">
+    <div id="authBox">
+      <h2>Enter Access Password</h2>
+      <input type="password" id="passwordInput" placeholder="Password" />
+      <button onclick="checkPassword()">Enter</button>
+      <p id="authError" class="error-message"></p>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="mainApp">
+    <header>
+      <h1>FaceApp Attendance System</h1>
+    </header>
+    <main>
+      <input type="text" id="nameInput" placeholder="Enter your name" required />
+      <video id="videoInput" autoplay muted></video>
+      <button id="captureButton">Capture</button>
+      <div id="captureResult"></div>
+      <div id="timerDisplay"></div>
+      <div id="errorDisplay" class="error-message"></div>
+    </main>
+    <footer>
+      <p>&copy; 2025 FaceApp animated and created by IT J******</p>
+    </footer>
+  </div>
+
+  <script>
+    function checkPassword() {
+      const passwordInput = document.getElementById("passwordInput");
+      const authError = document.getElementById("authError");
+      if (passwordInput.value === "faceapp") {
+        document.getElementById("authContainer").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+      } else {
+        authError.textContent = "❌ Incorrect password.";
+      }
+    }
+
+    // Timer
+    let timerInterval;
+    const timerDisplay = document.getElementById("timerDisplay");
+    function updateTimer() {
+      const now = new Date();
+      timerDisplay.textContent = `Current Time: ${now.toLocaleString()}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

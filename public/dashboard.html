@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FaceApp Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #password-prompt {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      z-index: 1000;
+    }
+    #password-prompt input {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #password-prompt button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #password-prompt button:hover {
+      background-color: #0056b3;
+    }
+    #dashboard-content {
+      display: none;
+    }
+    .image-wrapper {
+      margin-bottom: 20px;
+    }
+    .delete-btn {
+      margin-top: 5px;
+      padding: 6px 12px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <div id="password-prompt">
+    <h2>Enter Password</h2>
+    <input type="password" id="password-input">
+    <button onclick="checkPassword()">Submit</button>
+    <p id="incorrect-password" style="color: red; margin-top: 10px; display: none;">Incorrect password</p>
+  </div>
+
+  <div id="dashboard-content">
+    <header>
+      <h1>📸 FaceApp Attendance Dashboard</h1>
+    </header>
+
+    <main>
+      <div id="imageContainer"></div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 FaceApp System animated and created by IT J******</p>
+    </footer>
+  </div>
+
+  <script>
+    const passwordPrompt = document.getElementById("password-prompt");
+    const dashboardContent = document.getElementById("dashboard-content");
+    const passwordInput = document.getElementById("password-input");
+    const incorrectPassword = document.getElementById("incorrect-password");
+    const correctPassword = "1";
+
+    function checkPassword() {
+      if (passwordInput.value === correctPassword) {
+        sessionStorage.setItem('dashboardAccess', 'granted');
+        passwordPrompt.style.display = "none";
+        dashboardContent.style.display = "block";
+        loadImages();
+      } else {
+        incorrectPassword.style.display = "block";
+      }
+    }
+
+    if (sessionStorage.getItem('dashboardAccess') === 'granted') {
+      passwordPrompt.style.display = "none";
+      dashboardContent.style.display = "block";
+      loadImages();
+    }
+
+    function loadImages() {
+      const container = document.getElementById("imageContainer");
+      fetch("/images")
+        .then(res => res.json())
+        .then(data => {
+          container.innerHTML = '';
+          if (data.success && data.files.length > 0) {
+            data.files.forEach(file => {
+              const wrapper = document.createElement("div");
+              wrapper.classList.add("image-wrapper");
+
+              const img = document.createElement("img");
+              img.src = `/uploads/${file}`;
+              img.alt = file;
+              img.width = 200;
+              img.style.display = "block";
+              img.style.marginBottom = "5px";
+
+              const parts = file.split('_');
+              let timestampText = "Timestamp not found";
+              if (parts.length >= 2) {
+                const timestamp = parseInt(parts[parts.length - 1]);
+                if (!isNaN(timestamp)) {
+                  timestampText = new Date(timestamp).toLocaleString();
+                }
+              }
+
+              const caption = document.createElement("p");
+              caption.textContent = `File: ${file}`;
+              caption.style.fontSize = "14px";
+              caption.style.color = "#333";
+              caption.style.marginBottom = "2px";
+
+              const timeCaption = document.createElement("p");
+              timeCaption.textContent = `Captured at: ${timestampText}`;
+              timeCaption.style.fontSize = "12px";
+              timeCaption.style.color = "#777";
+
+              const deleteBtn = document.createElement("button");
+              deleteBtn.className = "delete-btn";
+              deleteBtn.textContent = "🗑️ Delete";
+              deleteBtn.onclick = () => {
+                fetch(`/delete/${file}`, { method: "DELETE" })
+                  .then(res => res.json())
+                  .then(result => {
+                    if (result.success) {
+                      wrapper.remove();
+                    } else {
+                      alert("❌ Failed to delete image.");
+                    }
+                  });
+              };
+
+              wrapper.appendChild(img);
+              wrapper.appendChild(caption);
+              wrapper.appendChild(timeCaption);
+              wrapper.appendChild(deleteBtn);
+              container.appendChild(wrapper);
+            });
+          } else {
+            container.textContent = "No images uploaded yet.";
+          }
+        })
+        .catch(err => {
+          container.textContent = "❌ Error loading images.";
+          console.error("Dashboard error:", err);
+        });
+    }
+  </script>
+</body>
+</html>

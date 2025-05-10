@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+}
+
+header h1 {
+    color: white;
+    background-color: #222;
+    padding: 20px;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+video {
+    width: 320px;
+    height: 240px;
+    border: 2px solid #ccc;
+    margin: 10px 0;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input {
+    padding: 10px;
+    margin: 10px;
+    width: 200px;
+}
+
+#errorDisplay {
+    color: red;
+}
+
+#imageContainer img {
+    width: 200px;
+    margin: 10px;
+    border: 2px solid #ccc;
+}
